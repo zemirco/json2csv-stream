@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         es5: true,
         expr: true
       },
-      files: ['Gruntfile.js', 'index.js', 'example/example.js']
+      files: ['Gruntfile.js', 'index.js', 'example/example.js', 'benchmark/run.js']
     }
   });
 
