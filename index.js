@@ -44,7 +44,6 @@ MyStream.prototype._transform = function(chunk, encoding, done) {
       var result = re.exec(that._data);
       console.log('result');
       console.log(result);
-      that.emit('jsonFound', result[0]);
       that._data = that._data.split(result[0]).join('');
       if (!this._headerWritten) {
         that.writeHeader(result[0], function(err) {
@@ -101,7 +100,7 @@ MyStream.prototype.writeHeader = function(header, cb) {
     that.emit('header', headerLine);
     that.push(headerLine);
     that._headerWritten = true;
-    that._header = [];
+    that._header = null;
     cb(null);
   });
 };
