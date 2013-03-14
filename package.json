@@ -1,0 +1,32 @@
+{
+  "name": "json2csv-stream",
+  "version": "0.0.1",
+  "description": "Stream parser from json to csv",
+  "main": "index.js",
+  "dependencies": {
+    "async": "~0.2.6",
+    "readable-stream": "~1.0.2"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.2.0",
+    "benchmark": "~1.0.0"
+  },
+  "scripts": {
+    "test": "grunt test --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zeMirco/json2csv-stream"
+  },
+  "keywords": [
+    "json",
+    "csv",
+    "stream",
+    "parse",
+    "json2csv",
+    "convert"
+  ],
+  "author": "Mirco Zeiss",
+  "license": "MIT"
+}
