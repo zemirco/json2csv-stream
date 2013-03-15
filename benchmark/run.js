@@ -19,7 +19,7 @@ var parser, reader, writer;
 //    console.log('first cycle')
 //    console.log(count)
 //    parser = new MyStream();
-//    reader = fs.createReadStream('data.json');
+//    reader = fs.createReadStream('in.json');
 //    writer = fs.createWriteStream('out.csv');
 //
 //    var start = Date.now();
@@ -54,13 +54,13 @@ SimpleProtocol.prototype = Object.create(
 
 SimpleProtocol.prototype._transform = function(chunk, encoding, done) {
   chunk = chunk.toString().toUpperCase();
-  this.push(chunk)
+  this.push(chunk);
 };
 
 var count = 0;
 var durations = [];
 
-//var reader = fs.createReadStream('data.json');
+//var reader = fs.createReadStream('in.json');
 //var parser = new SimpleProtocol();
 //var writer = fs.createWriteStream('out.csv');
 //var start = Date.now();
@@ -76,7 +76,7 @@ async.whilst(
   },
   function(callback) {
     var start = Date.now();
-    var reader = fs.createReadStream('data.json');
+    var reader = fs.createReadStream('in.json');
     var parser = new SimpleProtocol();
     var writer = fs.createWriteStream('out.csv');
     reader.pipe(parser).pipe(writer);
@@ -85,7 +85,7 @@ async.whilst(
       durations.push(duration);
       count++;
       callback(null);
-    })
+    });
   },
   function(err) {
     console.log('done');
