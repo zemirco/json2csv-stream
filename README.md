@@ -1,5 +1,7 @@
 # json2csv-stream
 
+[![Build Status](https://travis-ci.org/zeMirco/json2csv-stream.png)](https://travis-ci.org/zeMirco/json2csv-stream)
+
 very early release, work in progress
 
 json2csv implemented as a transform stream.
