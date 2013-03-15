@@ -52,6 +52,8 @@ MyStream.prototype._transform = function(chunk, encoding, done) {
       console.log(result);
       if (!this._headerWritten) that.writeHeader(result[0]);
       that.writeLine(result[0], '_data');
+      // remove processed json string from _data store
+      that._data = that._data.split(result[0]).join('');
     }
   } else {
     var rex = /(\{[^}]+\})/g;
@@ -103,10 +105,6 @@ MyStream.prototype.writeLine = function(line, bucket) {
     lineStr = os.EOL + lineStr;
     that.emit('line', lineStr);
     that.push(lineStr);
-    // bucket is either '_data' or '_chunk'
-    // '_data' when json string is found in _data
-    // '_chunk' when json string is found in _chunk
-    that._data = that[bucket].split(line).join('');
     that._line = [];
   });
 };
