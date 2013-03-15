@@ -14,7 +14,7 @@ parser.on('line', function(data) {
 });
 
 // read the json file
-var reader = fs.createReadStream('data.json', {
+var reader = fs.createReadStream('example/data.json', {
   encoding: 'utf8',
   bufferSize: 32
 });
