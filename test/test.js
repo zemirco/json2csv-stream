@@ -35,6 +35,19 @@ describe('json2csv-stream', function() {
         fs.writeFile('test/fixtures/out_ssv.csv', ssv_data, function(err) {
           callback(err);
         });
+      },
+      function(callback) {
+        // only output specific keys
+        var key_data =
+          'car,color' + os.EOL +
+            'Audi,blue' + os.EOL +
+            'BMW,black' + os.EOL +
+            'Mercedes,red' + os.EOL +
+            'Porsche,green';
+
+        fs.writeFile('test/fixtures/out_keys.csv', key_data, function(err) {
+          callback(err);
+        });
       }
     ], function(err, results) {
       if (err) console.log(err);
@@ -106,6 +119,31 @@ describe('json2csv-stream', function() {
         if (err) console.log(err);
         _data = _data.toString();
         fs.readFile('test/fixtures/out_ssv.csv', function(err, data) {
+          if (err) console.log(err);
+          data = data.toString();
+          _data.should.eql(data);
+          done();
+        });
+      });
+    });
+
+  });
+
+  it('should provide optional support for specific keys', function(done) {
+
+    var parser = new MyStream({
+      keys: ['car','color']
+    });
+    var reader = fs.createReadStream('test/fixtures/in.json');
+    var writer = fs.createWriteStream('test/fixtures/_out_keys.csv');
+
+    reader.pipe(parser).pipe(writer);
+
+    writer.on('close', function() {
+      fs.readFile('test/fixtures/_out_keys.csv', function(err, _data) {
+        if (err) console.log(err);
+        _data = _data.toString();
+        fs.readFile('test/fixtures/out_keys.csv', function(err, data) {
           if (err) console.log(err);
           data = data.toString();
           _data.should.eql(data);

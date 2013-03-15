@@ -14,6 +14,7 @@ var MyStream = function(options) {
   if (!options) options = {};
 
   this.del = options.del || ',';
+  this.keys = options.keys;
 
   this._headerWritten = false;
   this._header = [];
@@ -74,11 +75,12 @@ MyStream.prototype._transform = function(chunk, encoding, done) {
 MyStream.prototype.writeHeader = function(header) {
   var that = this;
   header = JSON.parse(header);
+  var keys = that.keys || Object.keys(header);
   var iterator = function(item, callback) {
     that._header.push(item);
     callback(null);
   };
-  async.each(Object.keys(header), iterator, function(err) {
+  async.each(keys, iterator, function(err) {
     var headerLine = that._header.join(that.del);
     console.log(that._header);
     that.emit('header', headerLine);
@@ -95,12 +97,13 @@ MyStream.prototype.writeLine = function(line, bucket) {
   console.log(line);
   var that = this;
   var lineObject = JSON.parse(line);
-  var iterator = function(key, callback) {
-    var val = lineObject[key];
+  var keys = that.keys || Object.keys(lineObject);
+  var iterator = function(item, callback) {
+    var val = lineObject[item];
     that._line.push(val);
     callback(null);
   };
-  async.each(Object.keys(lineObject), iterator, function(err) {
+  async.each(keys, iterator, function(err) {
     var lineStr = that._line.join(that.del);
     lineStr = os.EOL + lineStr;
     that.emit('line', lineStr);
