@@ -44,8 +44,6 @@ The default delimiter is `,` (comma). If you want to have tab-seperated values (
 semilocon-seperated values (;) you can specify an optional delimiter inside the `options`.
 
 ```javascript
-var MyStream = require('../index.js');
-
 var parser = new MyStream({
   del: ';'
 });
@@ -56,8 +54,6 @@ var parser = new MyStream({
 You can specify which key-value pairs you'd like to include in your `.csv` file. Use the `keys` property.
 
 ```javascript
-var MyStream = require('../index.js');
-
 var parser = new MyStream({
   keys: ['car', 'color']
 });
