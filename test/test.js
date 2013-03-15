@@ -1,9 +1,24 @@
 
 var should = require('should');
 var fs = require('fs');
+var os = require('os');
 var MyStream = require('../index.js');
 
 describe('json2csv-stream', function() {
+
+  before(function(done) {
+    var data =
+      'car,price,color' + os.EOL +
+      'Audi,40000,blue' + os.EOL +
+      'BMW,35000,black' + os.EOL +
+      'Mercedes,80000,red' + os.EOL +
+      'Porsche,60000,green';
+
+    fs.writeFile('test/fixtures/out.csv', data, function(err) {
+      if (err) console.log(err);
+      done();
+    });
+  });
 
   it('should parse json to csv when json is in chunk', function(done) {
 
