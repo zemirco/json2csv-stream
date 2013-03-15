@@ -38,6 +38,19 @@ parser.on('line', function(data) {
 });
 ```
 
+### Use optional custom delimiter
+
+The default delimiter is `,` (comma). If you want to have tab-seperated values (\t) or
+semilocon-seperated values you can specify an optional delimiter inside the `options`.
+
+```javascript
+var MyStream = require('../index.js');
+
+var parser = new MyStream({
+  del: ';'
+});
+```javascript
+
 ## Benchmark
 
 *coming soon*
