@@ -49,7 +49,7 @@ var MyStream = require('../index.js');
 var parser = new MyStream({
   del: ';'
 });
-```javascript
+```
 
 ## Benchmark
 
