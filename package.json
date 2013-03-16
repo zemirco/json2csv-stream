@@ -16,7 +16,7 @@
     "should": "~1.2.2"
   },
   "scripts": {
-    "test": "grunt test --verbose"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
