@@ -32,38 +32,38 @@ MyStream.prototype = Object.create(Transform.prototype, {
 MyStream.prototype._transform = function(chunk, encoding, done) {
   var that = this;
 
-  console.log('--------------');
+  // console.log('--------------');
   that._chunk = chunk.toString();
-  console.log('data: ' + that._data);
-  console.log('chunk: ' + that._chunk);
+  // console.log('data: ' + that._data);
+  // console.log('chunk: ' + that._chunk);
   var re = /(\{[^}]+\})/g;
   var m = re.exec(that._chunk);
-  console.log('is chunk json -> ' + !!m);
+  // console.log('is chunk json -> ' + !!m);
   if (!m) {
     // no json in chunk found -> append chunk to data collection
     that._data += that._chunk;
-    console.log('new data: ' + that._data);
+    // console.log('new data: ' + that._data);
     // check if data collection contains json object
     var result = re.exec(that._data);
-    console.log('is new data json -> ' + !!result);
+    // console.log('is new data json -> ' + !!result);
     if (result) {
       // that._data plus new chunk now has json object
-      console.log('result');
-      console.log(result);
+      // console.log('result');
+      // console.log(result);
       if (!this._headerWritten) that.writeHeader(result[0]);
       that.writeLine(result[0]);
       // remove processed json string from _data store
       that._data = that._data.split(result[0]).join('');
     }
   } else {
-    console.log(m);
+    // console.log(m);
     if (!this._headerWritten) that.writeHeader(m[0]);
     for (m; m; m = re.exec(that._chunk)) {
       that.writeLine(m[0]);
     }
   }
   done();
-  console.log('--------------');
+  // console.log('--------------');
 };
 
 /**
@@ -79,7 +79,7 @@ MyStream.prototype.writeHeader = function(header) {
   };
   async.each(keys, iterator, function(err) {
     var headerLine = that._header.join(that.del);
-    console.log(that._header);
+    // console.log(that._header);
     that.emit('header', headerLine);
     that.push(headerLine);
     that._headerWritten = true;
@@ -90,8 +90,8 @@ MyStream.prototype.writeHeader = function(header) {
  * write a body line
  */
 MyStream.prototype.writeLine = function(line) {
-  console.log('inside write line');
-  console.log(line);
+  // console.log('inside write line');
+  // console.log(line);
   var that = this;
   var lineObject = JSON.parse(line);
   var keys = that.keys || Object.keys(lineObject);
