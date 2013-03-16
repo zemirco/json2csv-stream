@@ -1,7 +1,7 @@
 {
   "name": "json2csv-stream",
   "version": "0.0.1",
-  "description": "Stream parser from json to csv",
+  "description": "Transform stream data from json to csv",
   "main": "index.js",
   "dependencies": {
     "async": "~0.2.6",
@@ -31,6 +31,6 @@
     "convert",
     "transform"
   ],
-  "author": "Mirco Zeiss",
+  "author": "Mirco Zeiss <mirco.zeiss@gmail.com>",
   "license": "MIT"
 }
