@@ -15,6 +15,7 @@ var MyStream = function(options) {
 
   this.del = options.del || ',';
   this.keys = options.keys;
+  this.eol = options.eol || os.EOL;
 
   this._headerWritten = false;
   this._header = [];
@@ -102,7 +103,7 @@ MyStream.prototype.writeLine = function(line) {
   };
   async.each(keys, iterator, function(err) {
     var lineStr = that._line.join(that.del);
-    lineStr = os.EOL + lineStr;
+    lineStr = that.eol + lineStr;
     that.emit('line', lineStr);
     that.push(lineStr);
     that._line = [];
