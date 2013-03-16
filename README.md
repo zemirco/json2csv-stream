@@ -2,11 +2,10 @@
 
 [![Build Status](https://travis-ci.org/zeMirco/json2csv-stream.png)](https://travis-ci.org/zeMirco/json2csv-stream)
 
-very early release, work in progress
-
-json2csv implemented as a transform stream.
-
-Parse json streams to csv output. Emits `header` and `line` events for custom use.
+Transform json to csv data. The difference to my other module
+[json2csv](https://github.com/zeMirco/json2csv) is `json2csv-stream` uses streams for transforming the incoming
+data. The module is built with the new streaming API from Node.js v0.10.0 but maintains backwards compatibility.
+You can listen for `header` and `line` events or pipe the data directly to a readable stream.
 
 Install with
 
@@ -14,13 +13,13 @@ Install with
 $ npm install json2csv-stream
 ```
 
-## Pipe data to readable stream
+## Transform and pipe data to readable stream
 
 ```javascript
 var fs = require('fs');
 var MyStream = require('json2csv-stream');
 
-// create the parsing stream
+// create the transform stream
 var parser = new MyStream();
 
 // create the read and write streams
@@ -67,7 +66,7 @@ The following options are supported
 ### Use optional custom delimiter
 
 The default delimiter is `,` (comma). If you want to have tab-seperated values `\t` or
-semilocon-seperated values `;` you can specify an optional delimiter inside the `options`.
+semilocon-seperated values `;` you can specify an optional delimiter using the `del` property.
 
 ```javascript
 var parser = new MyStream({
