@@ -14,11 +14,7 @@ parser.on('line', function(data) {
 });
 
 // read the json file
-var reader = fs.createReadStream('example/data.json', {
-  encoding: 'utf8',
-  bufferSize: 32
-});
-
+var reader = fs.createReadStream('example/data.json');
 var writer = fs.createWriteStream('out.csv');
 
 reader.pipe(parser).pipe(writer);
