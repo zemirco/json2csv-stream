@@ -28,7 +28,8 @@
     "stream",
     "parse",
     "json2csv",
-    "convert"
+    "convert",
+    "transform"
   ],
   "author": "Mirco Zeiss",
   "license": "MIT"
