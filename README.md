@@ -8,11 +8,17 @@ json2csv implemented as a transform stream.
 
 Parse json streams to csv output. Emits `header` and `line` events for custom use.
 
+Install with
+
+```bash
+$ npm install json2csv-stream
+```
+
 ## Pipe data to readable stream
 
 ```javascript
 var fs = require('fs');
-var MyStream = require('../index.js');
+var MyStream = require('json2csv-stream');
 
 // create the parsing stream
 var parser = new MyStream();
@@ -40,10 +46,28 @@ parser.on('line', function(data) {
 });
 ```
 
+## Usage
+
+```javascript
+var MyStream = require('json2csv-stream');
+
+// create the parsing stream with default options
+var parser = new MyStream();
+
+// create the stream with custom options. All options are optional.
+var parser = new MyStream(options);
+```
+
+The following options are supported
+
+ - `del`: Delimiter for csv values. Default is `,`.
+ - `keys`: Specify the keys you'd like to output. In the default setting all keys are exported.
+ - `eol`: End-of-line marker. Default is the one used by the operating system.
+
 ### Use optional custom delimiter
 
-The default delimiter is `,` (comma). If you want to have tab-seperated values (\t) or
-semilocon-seperated values (;) you can specify an optional delimiter inside the `options`.
+The default delimiter is `,` (comma). If you want to have tab-seperated values `\t` or
+semilocon-seperated values `;` you can specify an optional delimiter inside the `options`.
 
 ```javascript
 var parser = new MyStream({
@@ -58,6 +82,17 @@ You can specify which key-value pairs you'd like to include in your `.csv` file.
 ```javascript
 var parser = new MyStream({
   keys: ['car', 'color']
+});
+```
+
+### Optional end-of-line markers
+
+The default end-of-line marker is `os.eol`. That means `\n` on unix systems and `\r\n` on windows machines.
+You can specify your own end-of-line markers with the `eol` property in the options.
+
+```javascript
+var parser = new MyStream({
+  eol: '\r\n'
 });
 ```
 
