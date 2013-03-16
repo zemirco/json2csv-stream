@@ -1,15 +1,23 @@
 
+/**
+ * Module dependencies
+ */
 var Transform = require('readable-stream').Transform;
 var util = require('util');
 var async = require('async');
 var os = require('os');
 
+/**
+ * MyStream constructor function.
+ *
+ * @param {Object} options Optional options including 'del', 'keys', 'eol'
+ */
 var MyStream = function(options) {
 
   if (!(this instanceof MyStream))
-    return new MyStream();
+    return new MyStream(options);
 
-  Transform.call(this);
+  Transform.call(this, options);
 
   if (!options) options = {};
 
@@ -24,90 +32,120 @@ var MyStream = function(options) {
   this._chunk = '';
 };
 
+/**
+ * Set prototype
+ */
 MyStream.prototype = Object.create(Transform.prototype, {
   constructor: {
     value: MyStream
   }
 });
 
+/**
+ * Main function that transforms incoming json data to csv output.
+ *
+ * @param {Buffer} chunk Incoming data
+ * @param {String} encoding Encoding of the incoming data. Defaults to 'utf8'
+ * @param {Function} done Called when the proceesing of the supplied chunk is done
+ */
 MyStream.prototype._transform = function(chunk, encoding, done) {
   var that = this;
 
-  // console.log('--------------');
   that._chunk = chunk.toString();
-  // console.log('data: ' + that._data);
-  // console.log('chunk: ' + that._chunk);
+  // regular expression looking for json in chunk
   var re = /(\{[^}]+\})/g;
+  // see if incoming chunk has a json object
   var m = re.exec(that._chunk);
-  // console.log('is chunk json -> ' + !!m);
   if (!m) {
     // no json in chunk found -> append chunk to data collection
     that._data += that._chunk;
-    // console.log('new data: ' + that._data);
-    // check if data collection contains json object
+    // check if new data collection contains json object
     var result = re.exec(that._data);
-    // console.log('is new data json -> ' + !!result);
     if (result) {
       // that._data plus new chunk now has json object
-      // console.log('result');
-      // console.log(result);
       if (!this._headerWritten) that.writeHeader(result[0]);
       that.writeLine(result[0]);
       // remove processed json string from _data store
       that._data = that._data.split(result[0]).join('');
     }
   } else {
-    // console.log(m);
+    // json in chunk found
     if (!this._headerWritten) that.writeHeader(m[0]);
     for (m; m; m = re.exec(that._chunk)) {
       that.writeLine(m[0]);
     }
   }
   done();
-  // console.log('--------------');
 };
 
 /**
- * write the header line
+ * Write the header line to csv output.
+ * Takes all keys or the keys specified in options.keys and pushes
+ * the KEYS out to a readable stream. Also emits a 'header' event where data is
+ * the header as a String. When processing the header is done sets
+ * _headerWritten to true.
+ *
+ * @param {String} header String containing a json object
  */
 MyStream.prototype.writeHeader = function(header) {
   var that = this;
+  // convert string to json object
   header = JSON.parse(header);
+  // use all keys or the ones specified in options.keys
   var keys = that.keys || Object.keys(header);
+  // iterate over all keys
   var iterator = function(item, callback) {
     that._header.push(item);
     callback(null);
   };
   async.each(keys, iterator, function(err) {
+    // when iteration is done process the header
     var headerLine = that._header.join(that.del);
-    // console.log(that._header);
+    // emit 'header' event
     that.emit('header', headerLine);
+    // push data to readable stream
     that.push(headerLine);
+    // remember that header has been processed
     that._headerWritten = true;
   });
 };
 
 /**
- * write a body line
+ * Write the body lines to csv output.
+ * Takes all keys or the keys specified in options.keys and pushes
+ * the VALUES out to a readable stream. Also emits a 'line' event where data is
+ * the line as a String. When processing the line is done clear
+ * the internal _line store.
+ *
+ * @param {String} line String containing a json object
  */
 MyStream.prototype.writeLine = function(line) {
-  // console.log('inside write line');
-  // console.log(line);
   var that = this;
+  // convert string to json object
   var lineObject = JSON.parse(line);
+  // use all keys or the ones specified in options.keys
   var keys = that.keys || Object.keys(lineObject);
+  // iterate over all keys
   var iterator = function(item, callback) {
     var val = lineObject[item];
     that._line.push(val);
     callback(null);
   };
   async.each(keys, iterator, function(err) {
+    // when iteration is done process the header
     var lineStr = that._line.join(that.del);
+    // add end-of-line marker to previous line foloowed by line string
     lineStr = that.eol + lineStr;
+    // emit 'line' event
     that.emit('line', lineStr);
+    // push data to readable stream
     that.push(lineStr);
+    // clear old data
     that._line = [];
   });
 };
 
+/**
+ * Export MyStream
+ */
 module.exports = MyStream;
