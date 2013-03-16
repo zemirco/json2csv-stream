@@ -17,6 +17,17 @@ $ npm install json2csv-stream
 
 ## Transform and pipe data to readable stream
 
+Input - data.json
+```javascript
+[
+  {"car": "Audi","price": 40000,"color": "blue"},
+  {"car": "BMW","price": 35000,"color": "black"},
+  {"car": "Mercedes","price": 80000,"color": "red"},
+  {"car": "Porsche","price": 60000,"color": "green"}
+]
+```
+
+Transformation process
 ```javascript
 var fs = require('fs');
 var MyStream = require('json2csv-stream');
@@ -29,6 +40,15 @@ var reader = fs.createReadStream('data.json');
 var writer = fs.createWriteStream('out.csv');
 
 reader.pipe(parser).pipe(writer);
+```
+
+Output - out.csv
+```
+car,price,color
+Audi,40000,blue
+BMW,35000,black
+Mercedes,80000,red
+Porsche,60000,green
 ```
 
 ## Use `header` and `line` events
