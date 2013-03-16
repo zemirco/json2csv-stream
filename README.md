@@ -86,7 +86,7 @@ var parser = new MyStream({
 });
 ```
 
-### Optional end-of-line markers
+### Use optional end-of-line markers
 
 The default end-of-line marker is `os.eol`. That means `\n` on unix systems and `\r\n` on windows machines.
 You can specify your own end-of-line markers with the `eol` property in the options.
