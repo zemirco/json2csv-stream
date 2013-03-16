@@ -36,33 +36,30 @@ MyStream.prototype._transform = function(chunk, encoding, done) {
   that._chunk = chunk.toString();
   console.log('data: ' + that._data);
   console.log('chunk: ' + that._chunk);
-  var re = /\{[^}]+\}/;
-  var isChunkJSON = re.test(that._chunk);
-  console.log('is chunk json -> ' + isChunkJSON);
-  if (!isChunkJSON) {
+  var re = /(\{[^}]+\})/g;
+  var m = re.exec(that._chunk);
+  console.log('is chunk json -> ' + !!m);
+  if (!m) {
     // no json in chunk found -> append chunk to data collection
     that._data += that._chunk;
     console.log('new data: ' + that._data);
     // check if data collection contains json object
-    var isDataJSON = re.test(that._data);
-    console.log('is new data json -> ' + isDataJSON);
-    if (isDataJSON) {
+    var result = re.exec(that._data);
+    console.log('is new data json -> ' + !!result);
+    if (result) {
       // that._data plus new chunk now has json object
-      var result = re.exec(that._data);
       console.log('result');
       console.log(result);
       if (!this._headerWritten) that.writeHeader(result[0]);
-      that.writeLine(result[0], '_data');
+      that.writeLine(result[0]);
       // remove processed json string from _data store
       that._data = that._data.split(result[0]).join('');
     }
   } else {
-    var rex = /(\{[^}]+\})/g;
-    var m = rex.exec(that._chunk);
     console.log(m);
     if (!this._headerWritten) that.writeHeader(m[0]);
-    for (m; m; m = rex.exec(that._chunk)) {
-      that.writeLine(m[0], '_chunk');
+    for (m; m; m = re.exec(that._chunk)) {
+      that.writeLine(m[0]);
     }
   }
   done();
@@ -92,7 +89,7 @@ MyStream.prototype.writeHeader = function(header) {
 /**
  * write a body line
  */
-MyStream.prototype.writeLine = function(line, bucket) {
+MyStream.prototype.writeLine = function(line) {
   console.log('inside write line');
   console.log(line);
   var that = this;
