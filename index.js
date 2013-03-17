@@ -24,12 +24,15 @@ var MyStream = function(options) {
   this.del = options.del || ',';
   this.keys = options.keys;
   this.eol = options.eol || os.EOL;
+  this.showHeader = options.showHeader !== false;
 
   this._headerWritten = false;
   this._header = [];
   this._line = [];
   this._data = '';
   this._chunk = '';
+  this._firstLineWritten = false;
+
 };
 
 /**
@@ -63,14 +66,14 @@ MyStream.prototype._transform = function(chunk, encoding, done) {
     var result = re.exec(that._data);
     if (result) {
       // that._data plus new chunk now has json object
-      if (!this._headerWritten) that.writeHeader(result[0]);
+      if (!that._headerWritten && that.showHeader) that.writeHeader(result[0]);
       that.writeLine(result[0]);
       // remove processed json string from _data store
       that._data = that._data.split(result[0]).join('');
     }
   } else {
     // json in chunk found
-    if (!this._headerWritten) that.writeHeader(m[0]);
+    if (!that._headerWritten && that.showHeader) that.writeHeader(m[0]);
     for (m; m; m = re.exec(that._chunk)) {
       that.writeLine(m[0]);
     }
@@ -134,8 +137,12 @@ MyStream.prototype.writeLine = function(line) {
   async.each(keys, iterator, function(err) {
     // when iteration is done process the header
     var lineStr = that._line.join(that.del);
-    // add end-of-line marker to previous line foloowed by line string
-    lineStr = that.eol + lineStr;
+    // add end-of-line marker to previous line followed by line string
+    if (!that._firstLineWritten && !that.showHeader) {
+      that._firstLineWritten = true;
+    } else {
+      lineStr = that.eol + lineStr;
+    }
     // emit 'line' event
     that.emit('line', lineStr);
     // push data to readable stream
