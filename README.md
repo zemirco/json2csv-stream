@@ -84,6 +84,7 @@ The following options are supported
  - `del`: Delimiter for csv values. Default is `,`.
  - `keys`: Specify the keys you'd like to output. In the default setting all keys are exported.
  - `eol`: End-of-line marker. Default is the one used by the operating system.
+ - `showHeader`: If you don't want the header line in your csv set to `false`. Default is `true`.
 
 ### Use optional custom delimiter
 
@@ -114,6 +115,16 @@ You can specify your own end-of-line markers with the `eol` property in the opti
 ```javascript
 var parser = new MyStream({
   eol: '\r\n'
+});
+```
+
+### Use without writing the header line
+
+If you want your csv data without the header line set `showHeader` to `false`;
+
+```javascript
+var parser = new MyStream({
+  showHeader: false
 });
 ```
 
