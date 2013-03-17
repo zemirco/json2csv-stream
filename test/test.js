@@ -14,10 +14,10 @@ describe('json2csv-stream', function() {
         // comma seperated values
         var csv_data =
           'car,price,color' + os.EOL +
-            'Audi,40000,blue' + os.EOL +
-            'BMW,35000,black' + os.EOL +
-            'Mercedes,80000,red' + os.EOL +
-            'Porsche,60000,green';
+          'Audi,40000,blue' + os.EOL +
+          'BMW,35000,black' + os.EOL +
+          'Mercedes,80000,red' + os.EOL +
+          'Porsche,60000,green';
         fs.writeFile('test/fixtures/out.csv', csv_data, function(err) {
           callback(err);
         });
@@ -26,10 +26,10 @@ describe('json2csv-stream', function() {
         // semicolon seperated values
         var ssv_data =
           'car;price;color' + os.EOL +
-            'Audi;40000;blue' + os.EOL +
-            'BMW;35000;black' + os.EOL +
-            'Mercedes;80000;red' + os.EOL +
-            'Porsche;60000;green';
+          'Audi;40000;blue' + os.EOL +
+          'BMW;35000;black' + os.EOL +
+          'Mercedes;80000;red' + os.EOL +
+          'Porsche;60000;green';
         fs.writeFile('test/fixtures/out_ssv.csv', ssv_data, function(err) {
           callback(err);
         });
@@ -38,10 +38,10 @@ describe('json2csv-stream', function() {
         // only output specific keys
         var key_data =
           'car,color' + os.EOL +
-            'Audi,blue' + os.EOL +
-            'BMW,black' + os.EOL +
-            'Mercedes,red' + os.EOL +
-            'Porsche,green';
+          'Audi,blue' + os.EOL +
+          'BMW,black' + os.EOL +
+          'Mercedes,red' + os.EOL +
+          'Porsche,green';
         fs.writeFile('test/fixtures/out_keys.csv', key_data, function(err) {
           callback(err);
         });
@@ -67,6 +67,17 @@ describe('json2csv-stream', function() {
           'Mercedes,80000,red\r\n' +
           'Porsche,60000,green';
         fs.writeFile('test/fixtures/out_dos.csv', dos_data, function(err) {
+          callback(err);
+        });
+      },
+      function(callback) {
+        // comma seperated values
+        var no_header =
+          'Audi,40000,blue' + os.EOL +
+          'BMW,35000,black' + os.EOL +
+          'Mercedes,80000,red' + os.EOL +
+          'Porsche,60000,green';
+        fs.writeFile('test/fixtures/no_header.csv', no_header, function(err) {
           callback(err);
         });
       }
@@ -215,6 +226,31 @@ describe('json2csv-stream', function() {
         if (err) console.log(err);
         _data = _data.toString();
         fs.readFile('test/fixtures/out_dos.csv', function(err, data) {
+          if (err) console.log(err);
+          data = data.toString();
+          _data.should.eql(data);
+          done();
+        });
+      });
+    });
+
+  });
+
+  it('should allow disabling the header line', function(done) {
+
+    var parser = new MyStream({
+      showHeader: false
+    });
+    var reader = fs.createReadStream('test/fixtures/in.json');
+    var writer = fs.createWriteStream('test/fixtures/_no_header.csv');
+
+    reader.pipe(parser).pipe(writer);
+
+    writer.on('close', function() {
+      fs.readFile('test/fixtures/_no_header.csv', function(err, _data) {
+        if (err) console.log(err);
+        _data = _data.toString();
+        fs.readFile('test/fixtures/no_header.csv', function(err, data) {
           if (err) console.log(err);
           data = data.toString();
           _data.should.eql(data);
