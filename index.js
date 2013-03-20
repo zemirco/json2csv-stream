@@ -30,7 +30,6 @@ var MyStream = function(options) {
   this._header = [];
   this._line = [];
   this._data = '';
-  this._chunk = '';
   this._firstLineWritten = false;
 
 };
@@ -54,14 +53,14 @@ MyStream.prototype = Object.create(Transform.prototype, {
 MyStream.prototype._transform = function(chunk, encoding, done) {
   var that = this;
 
-  that._chunk = chunk.toString();
+  chunk = chunk.toString();
   // regular expression looking for json in chunk
   var re = /(\{[^}]+\})/g;
   // see if incoming chunk has a json object
-  var m = re.exec(that._chunk);
+  var m = re.exec(chunk);
   if (!m) {
     // no json in chunk found -> append chunk to data collection
-    that._data += that._chunk;
+    that._data += chunk;
     // check if new data collection contains json object
     var result = re.exec(that._data);
     if (result) {
@@ -74,7 +73,7 @@ MyStream.prototype._transform = function(chunk, encoding, done) {
   } else {
     // json in chunk found
     if (!that._headerWritten && that.showHeader) that.writeHeader(m[0]);
-    for (m; m; m = re.exec(that._chunk)) {
+    for (m; m; m = re.exec(chunk)) {
       that.writeLine(m[0]);
     }
   }
