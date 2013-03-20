@@ -130,7 +130,23 @@ var parser = new MyStream({
 
 ## Benchmark
 
-*coming soon*
+Go into the `/benchmark` folder and run
+
+```
+$ node benchmark.js
+```
+
+Results:
+
+```
+Executed benchmark against node module: "json2csv-stream"
+Count (34), Cycles (3), Elapsed (6.179 sec), Hz (563.3422353498144 ops/sec)
+
+Executed benchmark against node module: "json2csv"
+Count (38), Cycles (5), Elapsed (6.241 sec), Hz (652.5024167610189 ops/sec)
+
+Module: "json2csv" wins.
+```
 
 ## Test
 

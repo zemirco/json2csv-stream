@@ -13,7 +13,8 @@
     "benchmark": "~1.0.0",
     "mocha": "~1.8.2",
     "grunt-mocha-test": "~0.2.0",
-    "should": "~1.2.2"
+    "should": "~1.2.2",
+    "json2csv": "~2.0.0"
   },
   "scripts": {
     "test": "grunt test"

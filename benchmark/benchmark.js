@@ -1,51 +1,67 @@
 
- var fs = require('fs');
- var Transform = require('readable-stream').Transform;
- var util = require('util');
- var Benchmark = require('benchmark');
- var suite = new Benchmark.Suite;
+var fs = require('fs');
+var MyStream = require('../index.js');
+var util = require('util');
+var Benchmark = require('benchmark');
+var suite = new Benchmark.Suite;
+var json2csv = require('json2csv');
 
+// start benchmarking
+suite.add('json2csv-stream', {
+  'defer': true,
+  'fn': function(deferred) {
+    var reader = fs.createReadStream('data.json');
+    var parser = new MyStream();
+    var writer = fs.createWriteStream('out.csv');
 
- // my super uppercase stream
- function Uppercase(options) {
- if (!(this instanceof Uppercase))
- return new Uppercase(options);
+    reader.on('error', function (err) {
+      console.log(err);
+    });
 
- Transform.call(this, options);
- }
+    writer.on('error', function (err) {
+      console.log(err);
+    });
 
- Uppercase.prototype = Object.create(
- Transform.prototype, { constructor: { value: Uppercase }});
+    parser.on('end', function () {
+      // Wait until reader is over and then close reader and finish deferred test
+      writer.end();
+      deferred.resolve();
+    });
 
- Uppercase.prototype._transform = function(chunk, encoding, done) {
- chunk = chunk.toString().toUpperCase();
- this.push(chunk)
- };
+    reader.pipe(parser).pipe(writer, {'end': false});
+  }
+})
+.add('json2csv', {
+    'defer': true,
+    'fn': function(deferred) {
+      // var data = require('./data.json');
+      fs.readFile('data.json', function(err, data) {
+        data = JSON.parse(data.toString());
+        if (err) console.log(err);
+        json2csv({data: data, fields: ['car', 'price', 'color']}, function(err, csv) {
+          if (err) console.log(err);
+          fs.writeFile('out-no-streams.csv', csv, function(err) {
+            if (err) console.log(err);
+            deferred.resolve();
+          })
+        })
+      })
+    }
+  })
+// add listeners
+.on('cycle', function(event) {
+  var details = event.target;
 
- // start benchmarking
- suite.add('stream test', function() {
- var reader = fs.createReadStream('data.json');
- var parser = new Uppercase();
- // var writer = fs.createWriteStream('out.csv');
- reader.pipe(parser);
-
- reader.on('error', function(err) {
-   console.log('err in reader found')
-   console.log(err)
- })
-
- parser.on('error', function(err) {
-   console.log('err in parser found')
-   console.log(err)
- })
-
- })
- // add listeners
- .on('cycle', function(event) {
- console.log(String(event.target));
- })
- .on('complete', function() {
- console.log('Fastest is ' + this.filter('fastest').pluck('name'));
- })
- // run async
- .run();
+  console.log('Executed benchmark against node module: "%s"', details.name);
+  console.log('Count (%d), Cycles (%d), Elapsed (%d sec), Hz (%d ops/sec)\n'
+    , details.count
+    , details.cycles
+    , details.times.elapsed
+    , details.hz
+  );
+})
+.on('complete', function() {
+  console.log('Module: "'+ this.filter('fastest').pluck('name') +'" wins.');
+  })
+// run async
+.run();
