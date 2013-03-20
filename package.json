@@ -1,6 +1,6 @@
 {
   "name": "json2csv-stream",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Transform stream data from json to csv",
   "main": "index.js",
   "dependencies": {
