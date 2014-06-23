@@ -1,9 +1,9 @@
 # json2csv-stream
 
-[![Build Status](https://travis-ci.org/zeMirco/json2csv-stream.png)](https://travis-ci.org/zeMirco/json2csv-stream)
+[![Build Status](https://travis-ci.org/zemirco/json2csv-stream.png)](https://travis-ci.org/zemirco/json2csv-stream)
 
 Transform json to csv data. The difference to my other module
-[json2csv](https://github.com/zeMirco/json2csv) is `json2csv-stream` uses streams for transforming the incoming
+[json2csv](https://github.com/zemirco/json2csv) is `json2csv-stream` uses streams for transforming the incoming
 data. The module is built with the new streaming API from Node.js v0.10.0 but maintains backwards compatibility
 to earlier Node.js versions.
 
