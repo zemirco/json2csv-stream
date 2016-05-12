@@ -75,7 +75,7 @@ MyStream.prototype._transform = function(chunk, encoding, done) {
 
   chunk = chunk.toString();
   // regular expression looking for json in chunk
-  var re = /(\{[^}]+\})/g;
+  var re = /(?!\s|\}|$)\{[^\}"]*("(\\.|[^\\"])*"[^\}"]*)*\}/g;
   // see if incoming chunk has a json object
   var m = re.exec(chunk);
   if (!m) {
