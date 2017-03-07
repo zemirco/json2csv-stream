@@ -4,7 +4,7 @@
   "description": "Transform stream data from json to csv",
   "main": "index.js",
   "dependencies": {
-    "async": "~0.2.6"
+    "async": "^2.1.5"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
