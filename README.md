@@ -33,7 +33,8 @@ Transformation process
 var fs = require('fs');
 var MyStream = require('json2csv-stream');
 
-// create the transform stream
+
+// create the one-time-use transform stream
 var parser = new MyStream();
 
 // create the read and write streams
