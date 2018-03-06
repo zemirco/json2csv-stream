@@ -1,3 +1,6 @@
+# Deprecation notice
+This package has been deprecated in favour of the new streaming API of [json2csv](https://github.com/zemirco/json2csv).
+
 # json2csv-stream
 
 [![Build Status](https://travis-ci.org/zemirco/json2csv-stream.png)](https://travis-ci.org/zemirco/json2csv-stream)
